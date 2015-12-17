@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class BusRegistryTest {
+public class SimpleBusRegistryTest {
 
     @Test
     public void RegisterMessageHandler_Registers_Handler_Appropriately() {

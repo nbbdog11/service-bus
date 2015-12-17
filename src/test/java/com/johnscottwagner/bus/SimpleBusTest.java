@@ -6,17 +6,34 @@ import com.johnscottwagner.bus.components.Request;
 import com.johnscottwagner.bus.components.RequestHandler;
 import com.johnscottwagner.bus.components.Response;
 import com.johnscottwagner.bus.registry.BusRegistry;
+import com.johnscottwagner.bus.test.components.TestMessage;
 import com.johnscottwagner.bus.test.components.TestMessageHandler;
 import com.johnscottwagner.bus.test.components.TestRequestHandler;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class SimpleBusTest {
+
+    @Test
+    public void send_Invokes_Handle_Method_On_Message_Handler() {
+        final BusRegistry busRegistry = mock(BusRegistry.class);
+        final Bus simpleBus = new SimpleBus(busRegistry);
+        final MessageHandler messageHandler = mock(MessageHandler.class);
+        final List<MessageHandler> messageHandlerList = Collections.singletonList(messageHandler);
+
+        when(busRegistry.getMessageHandlersForType(TestMessage.class)).thenReturn(messageHandlerList);
+        final TestMessage testMessage = new TestMessage();
+        simpleBus.sendMessage(testMessage);
+        verify(messageHandler).handleMessage(testMessage);
+    }
 
     @Test
     public void registerMessageHandlers_Delegates_To_BusRegistry_List() {
