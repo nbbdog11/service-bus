@@ -1,4 +1,4 @@
-package com.johnscottwagner.bus;
+package com.johnscottwagner.bus.registry;
 
 import com.johnscottwagner.bus.components.MessageHandler;
 import com.johnscottwagner.bus.components.RequestHandler;
@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BusRegistry {
+public class SimpleBusRegistry implements BusRegistry {
 
     private final Map<Class, List<MessageHandler>> MESSAGE_HANDLER_MAP;
     private final Map<RequestAndResponseClasses, List<RequestHandler>> REQUEST_HANDLER_MAP;
 
-    public BusRegistry() {
-        MESSAGE_HANDLER_MAP = new ConcurrentHashMap<Class, List<MessageHandler>>();
-        REQUEST_HANDLER_MAP = new ConcurrentHashMap<RequestAndResponseClasses, List<RequestHandler>>();
+    public SimpleBusRegistry() {
+        MESSAGE_HANDLER_MAP = new ConcurrentHashMap<>();
+        REQUEST_HANDLER_MAP = new ConcurrentHashMap<>();
     }
 
     public void registerMessageHandler(final MessageHandler messageHandler) {
@@ -26,11 +26,12 @@ public class BusRegistry {
 
     public List<MessageHandler> getMessageHandlersForType(final Class aClass) {
         return MESSAGE_HANDLER_MAP.getOrDefault(aClass,
-                                                new ArrayList<MessageHandler>(0));
+                                                new ArrayList<>(0));
     }
 
     private List<MessageHandler> initializeMessageHandlerMapForType(final Class messageType) {
-        return MESSAGE_HANDLER_MAP.putIfAbsent(messageType, new ArrayList<MessageHandler>());
+        return MESSAGE_HANDLER_MAP.putIfAbsent(messageType,
+                                               new ArrayList<>());
     }
 
     private void addMessageHandlerToMap(final MessageHandler messageHandler) {
@@ -55,11 +56,12 @@ public class BusRegistry {
                                                                             final Class responseClass) {
         return REQUEST_HANDLER_MAP.getOrDefault(new RequestAndResponseClasses(requestClass,
                                                                               responseClass),
-                                                new ArrayList<RequestHandler>(0));
+                                                new ArrayList<>(0));
     }
 
     private void initializeRequestHandlerMapForType(final RequestAndResponseClasses requestAndResponseClasses) {
-        REQUEST_HANDLER_MAP.putIfAbsent(requestAndResponseClasses, new ArrayList<RequestHandler>());
+        REQUEST_HANDLER_MAP.putIfAbsent(requestAndResponseClasses,
+                                        new ArrayList<>());
     }
 
     private static class RequestAndResponseClasses {
