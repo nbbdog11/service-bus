@@ -18,7 +18,8 @@ public class SimpleBus implements Bus {
     }
 
     public void sendMessage(final Message message) {
-
+        busRegistry.getMessageHandlersForType(message.getClass())
+                   .forEach(h -> h.handleMessage(message));
     }
 
     public Response sendRequest(final Request request) {
